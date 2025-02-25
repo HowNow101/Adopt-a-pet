@@ -67,7 +67,7 @@
     </style>
 </head>
 <body>
-    <h1>🐶 Adopt a Buddy 🐱</h1>
+    <h1>🐶 Adopt a Pet 🐱</h1>
     <div class="filters">
         <input type="text" id="location" placeholder="City or ZIP code">
         <select id="animalType">
@@ -124,7 +124,7 @@
                 petContainer.innerHTML = '';
                 data.animals.forEach(pet => {
                     const petUrl = pet.url || '#'; // Use Petfinder URL if available
-                    const photo = pet.photos[0]?.medium || 'images/placeholder.png';
+                    const photo = pet.photos[0]?.medium || 'images/placeholder.jpeg';
                     
                     petContainer.innerHTML += `
                         <div class="pet-card">
