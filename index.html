@@ -5,35 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adopt a Buddy 🐾</title>
     <style>
-        /* ... (keep existing CSS styles) ... */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f7f7f7;
+            padding: 20px;
+        }
         .filters {
             margin: 20px;
         }
-        select {
+        select, input {
             padding: 10px;
             margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .pet-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 20px auto;
+            max-width: 1200px;
+        }
+        .pet-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            width: 280px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .pet-card:hover {
+            transform: translateY(-5px);
+        }
+        .pet-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .pet-image:hover {
+            opacity: 0.9;
+        }
+        button {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #ff5252;
+        }
+        a {
+            color: #ff6b6b;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
     <h1>🐶 Adopt a Buddy 🐱</h1>
     <div class="filters">
-        <input type="text" id="location" placeholder="Enter city or ZIP code">
+        <input type="text" id="location" placeholder="City or ZIP code">
         <select id="animalType">
             <option value="">All Animals</option>
             <option value="dog">Dog</option>
             <option value="cat">Cat</option>
             <option value="rabbit">Rabbit</option>
-            <option value="bird">Bird</option>
-            <option value="horse">Horse</option>
         </select>
         <button onclick="searchPets()">Search</button>
     </div>
     <div class="pet-container" id="petContainer"></div>
 
     <script>
-        const API_KEY = 'yHHnIVc54Bs6VFcuJzbwRH1aapxzF3eFIMYggVK5v4B8v6yYFI'; // 🔒 Replace with yours
-        const API_SECRET = 'vRCu93dvkU5NiOHCpi6r0Anjyxh1EgutD1Mx3FWJ'; // 🔒 Replace with yours
+        const API_KEY = 'yHHnIVc54Bs6VFcuJzbwRH1aapxzF3eFIMYggVK5v4B8v6yYFI';
+        const API_SECRET = 'vRCu93dvkU5NiOHCpi6r0Anjyxh1EgutD1Mx3FWJ';
         let ACCESS_TOKEN = '';
 
         // Get OAuth token
@@ -65,7 +114,7 @@
             try {
                 await getToken();
                 let apiUrl = `https://api.petfinder.com/v2/animals?location=${location}&status=adoptable`;
-                if (animalType) apiUrl += `&type=${animalType}`; // Add animal type filter
+                if (animalType) apiUrl += `&type=${animalType}`;
 
                 const response = await fetch(apiUrl, {
                     headers: { 'Authorization': `Bearer ${ACCESS_TOKEN}` }
@@ -74,22 +123,23 @@
                 
                 petContainer.innerHTML = '';
                 data.animals.forEach(pet => {
+                    const petUrl = pet.url || '#'; // Use Petfinder URL if available
+                    const photo = pet.photos[0]?.medium || 'placeholder.jpg';
+                    
                     petContainer.innerHTML += `
                         <div class="pet-card">
-                            <img class="pet-image" src="${pet.photos[0]?.medium || 'placeholder.jpg'}" alt="${pet.name}">
+                            <a href="${petUrl}" target="_blank">
+                                <img class="pet-image" src="${photo}" alt="${pet.name}">
+                            </a>
                             <h3>${pet.name}</h3>
-                            <p>${pet.type || 'Animal'} • ${pet.breeds?.primary || 'Unknown breed'}</p>
+                            <p>${pet.type} • ${pet.breeds?.primary || 'Unknown breed'}</p>
                             <p>📍 ${pet.contact?.address?.city || ''}, ${pet.contact?.address?.state || ''}</p>
+                            ${petUrl !== '#' ? `<a href="${petUrl}" target="_blank">View Details →</a>` : ''}
                         </div>
                     `;
                 });
             } catch (error) {
                 petContainer.innerHTML = '<p>Error loading pets. Try again later.</p>';
-            }
-        }
-    </script>
-</body>
-</html>
             }
         }
     </script>
