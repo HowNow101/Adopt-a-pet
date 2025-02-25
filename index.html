@@ -124,7 +124,7 @@
                 petContainer.innerHTML = '';
                 data.animals.forEach(pet => {
                     const petUrl = pet.url || '#'; // Use Petfinder URL if available
-                    const photo = pet.photos[0]?.medium || 'placeholder.jpg';
+                    const photo = pet.photos[0]?.medium || 'images/placeholder.png';
                     
                     petContainer.innerHTML += `
                         <div class="pet-card">
